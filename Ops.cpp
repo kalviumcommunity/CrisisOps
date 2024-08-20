@@ -19,25 +19,25 @@ public:
 
     // update status of the incident
     void updateStatus(string newStatus) {
-        status = newStatus;
+        this->status = newStatus;
     }
 
     // get type of the incident
     string getType() const {
-        return type;
+        return this->type;
     }
 
     // get location of the incident
     string getLocation() const {
-        return location;
+        return this->location;
     }
 
     // display details
     void displayDetails() const {
-        cout << "Incident Type: " << type << "\n"
-             << "Severity: " << severity << "\n"
-             << "Location: " << location << "\n"
-             << "Status: " << status << endl;
+        cout << "Incident Type: " << this->type << "\n"
+             << "Severity: " << this->severity << "\n"
+             << "Location: " << this->location << "\n"
+             << "Status: " << this->status << endl;
     }
 };
 
@@ -55,26 +55,26 @@ public:
 
     // respond to a incident
     void respondToIncident(Incident& incident) {
-        if (available) {
-            cout << name << " is responding to a " << incident.getType()
+        if (this->available) {
+            cout << this->name << " is responding to a " << incident.getType()
                  << " at " << incident.getLocation() << "." << endl;
-            available = false;
+            this->available = false;
             incident.updateStatus("in progress");
         } else {
-            cout << name << " is currently unavailable." << endl;
+            cout << this->name << " is currently unavailable." << endl;
         }
     }
 
     // update availability of the responder
     void updateAvailability(bool status) {
-        available = status;
+        this->available = status;
     }
 
     // display details of the responder
     void displayDetails() const {
-        cout << "Responder Name: " << name << "\n"
-             << "Type: " << type << "\n"
-             << "Availability: " << (available ? "Available" : "Unavailable") << endl;
+        cout << "Responder Name: " << this->name << "\n"
+             << "Type: " << this->type << "\n"
+             << "Availability: " << (this->available ? "Available" : "Unavailable") << endl;
     }
 };
 
@@ -87,14 +87,14 @@ private:
 public:
     // log newIncident
     void logIncident(Incident incident) {
-        incidents.push_back(incident);
+        this->incidents.push_back(incident);
         cout << "New incident logged: " << incident.getType()
              << " at " << incident.getLocation() << "." << endl;
     }
 
     // add responder to the city
     void addResponder(Responder responder) {
-        responders.push_back(responder);
+        this->responders.push_back(responder);
     }
 
     // dispatch a responder
@@ -107,13 +107,13 @@ public:
         cout << "City Status Overview:\n" << endl;
 
         cout << "Incidents:\n";
-        for (const auto& incident : incidents) {
+        for (const auto& incident : this->incidents) {
             incident.displayDetails();
             cout << "-------------------\n";
         }
 
         cout << "Responders:\n";
-        for (const auto& responder : responders) {
+        for (const auto& responder : this->responders) {
             responder.displayDetails();
             cout << "-------------------\n";
         }
