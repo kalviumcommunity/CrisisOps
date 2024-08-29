@@ -17,17 +17,14 @@ public:
     Incident(string type, int severity, string location)
         : type(type), severity(severity), location(location), status("pending") {}
 
-    // update status of the incident
     void updateStatus(string newStatus) {
         status = newStatus;
     }
 
-    // get type of the incident
     string getType() const {
         return type;
     }
 
-    // get location of the incident
     string getLocation() const {
         return location;
     }
@@ -53,7 +50,6 @@ public:
     Responder(string name, string type)
         : name(name), type(type), available(true) {}
 
-    // respond to a incident
     void respondToIncident(Incident& incident) {
         if (available) {
             cout << name << " is responding to a " << incident.getType()
@@ -65,12 +61,10 @@ public:
         }
     }
 
-    // update availability of the responder
     void updateAvailability(bool status) {
         available = status;
     }
 
-    // display details of the responder
     void displayDetails() const {
         cout << "Responder Name: " << name << "\n"
              << "Type: " << type << "\n"
@@ -85,24 +79,29 @@ private:
     vector<Responder> responders;  
 
 public:
-    // log newIncident
+    City(Incident incs[], int incCount, Responder resps[], int respCount) {
+        for (int i = 0; i < incCount; i++) {
+            this->incidents.push_back(incs[i]);
+        }
+        for (int i = 0; i < respCount; i++) {
+            this->responders.push_back(resps[i]);
+        }
+    }
+
     void logIncident(Incident incident) {
         incidents.push_back(incident);
         cout << "New incident logged: " << incident.getType()
              << " at " << incident.getLocation() << "." << endl;
     }
 
-    // add responder to the city
     void addResponder(Responder responder) {
         responders.push_back(responder);
     }
 
-    // dispatch a responder
     void dispatchResponder(Responder& responder, Incident& incident) {
         responder.respondToIncident(incident);
     }
 
-    // display the overall cityStatus
     void displayCityStatus() const {
         cout << "City Status Overview:\n" << endl;
 
@@ -120,25 +119,21 @@ public:
     }
 };
 
-
 int main() {
+    Incident incidentsArray[] = {
+        Incident("Fire", 5, "peelamedu"),
+        Incident("Medical", 3, "RSpuram")
+    };
 
-    City city;
+    Responder respondersArray[] = {
+        Responder("Kamalesh", "Firefighter"),
+        Responder("Dharini", "Medic")
+    };
 
-    Incident fireIncident("Fire", 5, "peelamedu");
-    Incident medicalIncident("Medical", 3, "RSpuram");
+    City city(incidentsArray, 2, respondersArray, 2);
 
-    city.logIncident(fireIncident);
-    city.logIncident(medicalIncident);
-
-    Responder johnDoe("Kamalesh", "Firefighter");
-    Responder janeSmith("Dharini", "Medic");
-
-    city.addResponder(johnDoe);
-    city.addResponder(janeSmith);
-
-    city.dispatchResponder(johnDoe, fireIncident);
-    city.dispatchResponder(janeSmith, medicalIncident);
+    city.dispatchResponder(respondersArray[0], incidentsArray[0]);
+    city.dispatchResponder(respondersArray[1], incidentsArray[1]);
 
     city.displayCityStatus();
 
