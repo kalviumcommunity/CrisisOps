@@ -13,7 +13,6 @@ private:
     string status;     
 
 public:
-    
     Incident(string type, int severity, string location)
         : type(type), severity(severity), location(location), status("pending") {}
 
@@ -46,7 +45,6 @@ private:
     bool available;     
 
 public:
-    
     Responder(string name, string type)
         : name(name), type(type), available(true) {}
 
@@ -75,11 +73,11 @@ public:
 // City Class
 class City {
 private:
-    vector<Incident> incidents;    
-    vector<Responder> responders;  
+    vector<Incident*> incidents;    
+    vector<Responder*> responders;  
 
 public:
-    City(Incident incs[], int incCount, Responder resps[], int respCount) {
+    City(Incident* incs[], int incCount, Responder* resps[], int respCount) {
         for (int i = 0; i < incCount; i++) {
             this->incidents.push_back(incs[i]);
         }
@@ -88,18 +86,18 @@ public:
         }
     }
 
-    void logIncident(Incident incident) {
+    void logIncident(Incident* incident) {
         this->incidents.push_back(incident);
-        cout << "New incident logged: " << incident.getType()
-             << " at " << incident.getLocation() << "." << endl;
+        cout << "New incident logged: " << incident->getType()
+             << " at " << incident->getLocation() << "." << endl;
     }
 
-    void addResponder(Responder responder) {
+    void addResponder(Responder* responder) {
         this->responders.push_back(responder);
     }
 
-    void dispatchResponder(Responder& responder, Incident& incident) {
-        responder.respondToIncident(incident);
+    void dispatchResponder(Responder* responder, Incident* incident) {
+        responder->respondToIncident(*incident);
     }
 
     void displayCityStatus() const {
@@ -107,27 +105,36 @@ public:
 
         cout << "Incidents:\n";
         for (const auto& incident : this->incidents) {
-            incident.displayDetails();
+            incident->displayDetails();
             cout << "-------------------\n";
         }
 
         cout << "Responders:\n";
         for (const auto& responder : this->responders) {
-            responder.displayDetails();
+            responder->displayDetails();
             cout << "-------------------\n";
+        }
+    }
+
+    ~City() {
+        for (auto incident : incidents) {
+            delete incident;
+        }
+        for (auto responder : responders) {
+            delete responder;
         }
     }
 };
 
 int main() {
-    Incident incidentsArray[] = {
-        Incident("Fire", 5, "peelamedu"),
-        Incident("Medical", 3, "RSpuram")
+    Incident* incidentsArray[] = {
+        new Incident("Fire", 5, "peelamedu"),
+        new Incident("Medical", 3, "RSpuram")
     };
 
-    Responder respondersArray[] = {
-        Responder("Kamalesh", "Firefighter"),
-        Responder("Dharini", "Medic")
+    Responder* respondersArray[] = {
+        new Responder("Kamalesh", "Firefighter"),
+        new Responder("Dharini", "Medic")
     };
 
     City city(incidentsArray, 2, respondersArray, 2);
