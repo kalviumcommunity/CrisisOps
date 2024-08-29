@@ -102,13 +102,11 @@ public:
 
     void displayCityStatus() const {
         cout << "City Status Overview:\n" << endl;
-
         cout << "Incidents:\n";
         for (const auto& incident : this->incidents) {
             incident->displayDetails();
             cout << "-------------------\n";
         }
-
         cout << "Responders:\n";
         for (const auto& responder : this->responders) {
             responder->displayDetails();
