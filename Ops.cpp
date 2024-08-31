@@ -12,9 +12,17 @@ private:
     string location;   
     string status;     
 
+    static int totalIncidents;
+
 public:
     Incident(string type, int severity, string location)
-        : type(type), severity(severity), location(location), status("pending") {}
+        : type(type), severity(severity), location(location), status("pending") {
+        totalIncidents++;
+    }
+
+    static int getTotalIncidents() {
+        return totalIncidents;
+    }
 
     void updateStatus(string newStatus) {
         status = newStatus;
@@ -28,7 +36,6 @@ public:
         return location;
     }
 
-    // display details
     void displayDetails() const {
         cout << "Incident Type: " << type << "\n"
              << "Severity: " << severity << "\n"
@@ -37,6 +44,8 @@ public:
     }
 };
 
+int Incident::totalIncidents = 0;
+
 // Responder Class
 class Responder {
 private:
@@ -44,9 +53,17 @@ private:
     string type;        
     bool available;     
 
+    static int totalResponders;
+
 public:
     Responder(string name, string type)
-        : name(name), type(type), available(true) {}
+        : name(name), type(type), available(true) {
+        totalResponders++;  
+    }
+
+    static int getTotalResponders() {
+        return totalResponders;
+    }
 
     void respondToIncident(Incident& incident) {
         if (available) {
@@ -69,6 +86,8 @@ public:
              << "Availability: " << (available ? "Available" : "Unavailable") << endl;
     }
 };
+
+int Responder::totalResponders = 0;
 
 // City Class
 class City {
@@ -102,14 +121,16 @@ public:
 
     void displayCityStatus() const {
         cout << "City Status Overview:\n" << endl;
+        cout << "Total Incidents: " << Incident::getTotalIncidents() << endl;
+        cout << "Total Responders: " << Responder::getTotalResponders() << endl;
         cout << "Incidents:\n";
         for (const auto& incident : this->incidents) {
-            incident.displayDetails();
+            incident->displayDetails();
             cout << "-------------------\n";
         }
         cout << "Responders:\n";
         for (const auto& responder : this->responders) {
-            responder.displayDetails();
+            responder->displayDetails();
             cout << "-------------------\n";
         }
     }
@@ -126,8 +147,8 @@ public:
 
 int main() {
     Incident* incidentsArray[] = {
-        new Incident("Fire", 5, "peelamedu"),
-        new Incident("Medical", 3, "RSpuram")
+        new Incident("Fire", 5, "Peelamedu"),
+        new Incident("Medical", 3, "R.S. Puram")
     };
 
     Responder* respondersArray[] = {
