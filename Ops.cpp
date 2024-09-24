@@ -7,17 +7,18 @@ using namespace std;
 // Incident Class
 class Incident {
 private:
-    string type; // Encapsulation: Data members are private, protecting the type of the incident      
-    int severity; // Encapsulation: Severity of the incident is hidden from direct access     
-    string location; // Encapsulation: Location is private, controlled via methods
-    string status; // Encapsulation: Status is also private, ensuring controlled access    
+    string type; // Abstraction: The type of incident is stored internally.      
+    int severity; // Abstraction: The severity of the incident is stored internally.     
+    string location; // Abstraction: The location of the incident is stored internally
+    string status; // Abstraction: The status of the incident is stored internally.    
 
-    static int totalIncidents;
+    static int totalIncidents; // Abstraction: Total incidents are tracked internally.
+
 
 public:
     Incident(string type, int severity, string location)
         : type(type), severity(severity), location(location), status("pending") {
-        totalIncidents++; // Encapsulation: Increments total incidents, which is encapsulated within the class  
+        totalIncidents++; // Abstraction: Internally updates the total incident count. 
     }
 
     static int getTotalIncidents() {
@@ -49,16 +50,18 @@ int Incident::totalIncidents = 0;
 // Responder Class
 class Responder {
 private:
-    string name; // Encapsulation: Name of the responder is private       
-    string type;  // Encapsulation: Type of responder (e.g., firefighter, medic) is private       
-    bool available; // Encapsulation: Availability status is private    
+    string name; // Abstraction: The name of the responder is stored internally.       
+    string type;  // Abstraction: The type of responder is stored internally.     
+    bool available; // Abstraction: The availability of the responder is stored internally.
+  
 
-    static int totalResponders; // Encapsulation: Static data member to track the total number of responders
+    static int totalResponders; // Abstraction: Total responders are tracked internally.
 
 public:
     Responder(string name, string type)
         : name(name), type(type), available(true) {
-        totalResponders++;  
+        totalResponders++;  // Abstraction: Internally updates the total responder count.
+        }
     }
 
     static int getTotalResponders() {
