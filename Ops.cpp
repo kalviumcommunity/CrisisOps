@@ -7,18 +7,19 @@ using namespace std;
 // Incident Class
 class Incident {
 private:
-    string type; // Abstraction: The type of incident is stored internally.      
-    int severity; // Abstraction: The severity of the incident is stored internally.     
-    string location; // Abstraction: The location of the incident is stored internally
-    string status; // Abstraction: The status of the incident is stored internally.    
+    string type;    
+    int severity;      
+    string location; 
+    string status;     
 
-    static int totalIncidents; // Abstraction: Total incidents are tracked internally.
+    static int totalIncidents;
 
 
 public:
+    // Constructor: Initializes an Incident with type, severity, and location
     Incident(string type, int severity, string location)
         : type(type), severity(severity), location(location), status("pending") {
-        totalIncidents++; // Abstraction: Internally updates the total incident count. 
+        totalIncidents++;
     }
 
     static int getTotalIncidents() {
@@ -50,19 +51,19 @@ int Incident::totalIncidents = 0;
 // Responder Class
 class Responder {
 private:
-    string name; // Abstraction: The name of the responder is stored internally.       
-    string type;  // Abstraction: The type of responder is stored internally.     
-    bool available; // Abstraction: The availability of the responder is stored internally.
+    string name;     
+    string type;      
+    bool available; 
   
 
-    static int totalResponders; // Abstraction: Total responders are tracked internally.
+    static int totalResponders; 
 
 public:
+// Constructor: Initializes a Responder with a name and type
     Responder(string name, string type)
         : name(name), type(type), available(true) {
-        totalResponders++;  // Abstraction: Internally updates the total responder count.
+        totalResponders++;  
         }
-    }
 
     static int getTotalResponders() {
         return totalResponders;
@@ -95,10 +96,11 @@ int Responder::totalResponders = 0;
 // City Class
 class City {
 private:
-    vector<Incident*> incidents; // Encapsulation: The list of incidents is private   
-    vector<Responder*> responders; // Encapsulation: The list of responders is private 
+    vector<Incident*> incidents;    
+    vector<Responder*> responders;  
 
 public:
+    // Constructor: Initializes a City with arrays of incidents and responders
     City(Incident* incs[], int incCount, Responder* resps[], int respCount) {
         for (int i = 0; i < incCount; i++) {
             this->incidents.push_back(incs[i]);
@@ -138,12 +140,13 @@ public:
         }
     }
 
+    // Destructor: Cleans up dynamically allocated memory for incidents and responders
     ~City() {
         for (auto incident : incidents) {
-            delete incident;
+            delete incident; // Destructor cleans up Incident objects
         }
         for (auto responder : responders) {
-            delete responder;
+            delete responder; // Destructor cleans up Responder objects
         }
     }
 };
