@@ -7,17 +7,17 @@ using namespace std;
 // Incident Class
 class Incident {
 private:
-    string type;       
-    int severity;      
-    string location;   
-    string status;     
+    string type; // Encapsulation: Data members are private, protecting the type of the incident      
+    int severity; // Encapsulation: Severity of the incident is hidden from direct access     
+    string location; // Encapsulation: Location is private, controlled via methods
+    string status; // Encapsulation: Status is also private, ensuring controlled access    
 
     static int totalIncidents;
 
 public:
     Incident(string type, int severity, string location)
         : type(type), severity(severity), location(location), status("pending") {
-        totalIncidents++;
+        totalIncidents++; // Encapsulation: Increments total incidents, which is encapsulated within the class  
     }
 
     static int getTotalIncidents() {
@@ -49,11 +49,11 @@ int Incident::totalIncidents = 0;
 // Responder Class
 class Responder {
 private:
-    string name;        
-    string type;        
-    bool available;     
+    string name; // Encapsulation: Name of the responder is private       
+    string type;  // Encapsulation: Type of responder (e.g., firefighter, medic) is private       
+    bool available; // Encapsulation: Availability status is private    
 
-    static int totalResponders;
+    static int totalResponders; // Encapsulation: Static data member to track the total number of responders
 
 public:
     Responder(string name, string type)
@@ -92,8 +92,8 @@ int Responder::totalResponders = 0;
 // City Class
 class City {
 private:
-    vector<Incident*> incidents;    
-    vector<Responder*> responders;  
+    vector<Incident*> incidents; // Encapsulation: The list of incidents is private   
+    vector<Responder*> responders; // Encapsulation: The list of responders is private 
 
 public:
     City(Incident* incs[], int incCount, Responder* resps[], int respCount) {
