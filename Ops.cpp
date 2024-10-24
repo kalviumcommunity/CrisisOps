@@ -5,12 +5,11 @@
 using namespace std;
 
 class Incident {
-protected:    
-    string type;    
-    int severity;      
-    string location; 
-    string status;     
-
+protected:
+    string type;
+    int severity;
+    string location;
+    string status;
     static int totalIncidents;
 
 public:
@@ -53,16 +52,15 @@ public:
 
 class Responder {
 protected:
-    string name;     
-    string type;      
-    bool available; 
-  
+    string name;
+    string type;
+    bool available;
     static int totalResponders;
 
 public:
     Responder(string name, string type)
         : name(name), type(type), available(true) {
-        totalResponders++;  
+        totalResponders++;
     }
 
     static int getTotalResponders() {
@@ -110,8 +108,8 @@ public:
 
 class City {
 private:
-    vector<Incident*> incidents;    
-    vector<Responder*> responders;  
+    vector<Incident*> incidents;
+    vector<Responder*> responders;
 
 public:
     City(Incident* incs[], int incCount, Responder* resps[], int respCount) {
@@ -125,8 +123,14 @@ public:
 
     void logIncident(Incident* incident) {
         this->incidents.push_back(incident);
-        cout << "New incident logged: " << incident->getType()
+        cout << "New incident logged (by pointer): " << incident->getType()
              << " at " << incident->getLocation() << "." << endl;
+    }
+
+    void logIncident(Incident& incident) {
+        this->incidents.push_back(&incident);
+        cout << "New incident logged (by reference): " << incident.getType()
+             << " at " << incident.getLocation() << "." << endl;
     }
 
     void addResponder(Responder* responder) {
@@ -175,6 +179,12 @@ int main() {
     };
 
     City city(incidentsArray, 2, respondersArray, 2);
+
+    Incident* newIncident = new Incident("Fire", 4, "Peelamedu");
+    city.logIncident(newIncident);  // overloaded method
+
+    TrafficIncident anotherIncident(5, "Thudiyalur");
+    city.logIncident(anotherIncident); 
 
     city.dispatchResponder(respondersArray[0], incidentsArray[0]);
     city.dispatchResponder(respondersArray[1], incidentsArray[1]);
