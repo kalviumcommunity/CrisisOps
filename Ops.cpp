@@ -4,19 +4,15 @@
 
 using namespace std;
 
-// Incident Class
 class Incident {
-private:
-    string type;    
-    int severity;      
-    string location; 
-    string status;     
-
+protected:
+    string type;
+    int severity;
+    string location;
+    string status;
     static int totalIncidents;
 
-
 public:
-    // Constructor: Initializes an Incident with type, severity, and location
     Incident(string type, int severity, string location)
         : type(type), severity(severity), location(location), status("pending") {
         totalIncidents++;
@@ -38,7 +34,7 @@ public:
         return location;
     }
 
-    void displayDetails() const {
+    virtual void displayDetails() const {
         cout << "Incident Type: " << type << "\n"
              << "Severity: " << severity << "\n"
              << "Location: " << location << "\n"
@@ -48,28 +44,30 @@ public:
 
 int Incident::totalIncidents = 0;
 
-// Responder Class
-class Responder {
-private:
-    string name;     
-    string type;      
-    bool available; 
-  
+class TrafficIncident : public Incident {
+public:
+    TrafficIncident(int severity, string location)
+        : Incident("Traffic", severity, location) {}
+};
 
-    static int totalResponders; 
+class Responder {
+protected:
+    string name;
+    string type;
+    bool available;
+    static int totalResponders;
 
 public:
-// Constructor: Initializes a Responder with a name and type
     Responder(string name, string type)
         : name(name), type(type), available(true) {
-        totalResponders++;  
-        }
+        totalResponders++;
+    }
 
     static int getTotalResponders() {
         return totalResponders;
     }
 
-    void respondToIncident(Incident& incident) {
+    virtual void respondToIncident(Incident& incident) {
         if (available) {
             cout << name << " is responding to a " << incident.getType()
                  << " at " << incident.getLocation() << "." << endl;
@@ -84,7 +82,7 @@ public:
         available = status;
     }
 
-    void displayDetails() const {
+    virtual void displayDetails() const {
         cout << "Responder Name: " << name << "\n"
              << "Type: " << type << "\n"
              << "Availability: " << (available ? "Available" : "Unavailable") << endl;
@@ -93,14 +91,27 @@ public:
 
 int Responder::totalResponders = 0;
 
-// City Class
+class Police : public Responder {
+public:
+    Police(string name) : Responder(name, "Police") {}
+};
+
+class Firefighter : public Responder {
+public:
+    Firefighter(string name) : Responder(name, "Firefighter") {}
+};
+
+class Medic : public Responder {
+public:
+    Medic(string name) : Responder(name, "Medic") {}
+};
+
 class City {
 private:
-    vector<Incident*> incidents;    
-    vector<Responder*> responders;  
+    vector<Incident*> incidents;
+    vector<Responder*> responders;
 
 public:
-    // Constructor: Initializes a City with arrays of incidents and responders
     City(Incident* incs[], int incCount, Responder* resps[], int respCount) {
         for (int i = 0; i < incCount; i++) {
             this->incidents.push_back(incs[i]);
@@ -110,13 +121,19 @@ public:
         }
     }
 
-    void logIncident(Incident incident) {
+    void logIncident(Incident* incident) {
         this->incidents.push_back(incident);
-        cout << "New incident logged: " << incident.getType()
+        cout << "New incident logged (by pointer): " << incident->getType()
+             << " at " << incident->getLocation() << "." << endl;
+    }
+
+    void logIncident(Incident& incident) {
+        this->incidents.push_back(&incident);
+        cout << "New incident logged (by reference): " << incident.getType()
              << " at " << incident.getLocation() << "." << endl;
     }
 
-    void addResponder(Responder responder) {
+    void addResponder(Responder* responder) {
         this->responders.push_back(responder);
     }
 
@@ -140,29 +157,34 @@ public:
         }
     }
 
-    // Destructor: Cleans up dynamically allocated memory for incidents and responders
     ~City() {
         for (auto incident : incidents) {
-            delete incident; // Destructor cleans up Incident objects
+            delete incident;
         }
         for (auto responder : responders) {
-            delete responder; // Destructor cleans up Responder objects
+            delete responder;
         }
     }
 };
 
 int main() {
     Incident* incidentsArray[] = {
-        new Incident("Fire", 5, "Peelamedu"),
+        new TrafficIncident(2, "Anna Nagar"),
         new Incident("Medical", 3, "R.S. Puram")
     };
 
     Responder* respondersArray[] = {
-        new Responder("Kamalesh", "Firefighter"),
-        new Responder("Dharini", "Medic")
+        new Firefighter("Kamalesh"),
+        new Medic("Dharini")
     };
 
     City city(incidentsArray, 2, respondersArray, 2);
+
+    Incident* newIncident = new Incident("Fire", 4, "Peelamedu");
+    city.logIncident(newIncident);  // overloaded method
+
+    TrafficIncident anotherIncident(5, "Thudiyalur");
+    city.logIncident(anotherIncident); 
 
     city.dispatchResponder(respondersArray[0], incidentsArray[0]);
     city.dispatchResponder(respondersArray[1], incidentsArray[1]);
