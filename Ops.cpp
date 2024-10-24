@@ -44,6 +44,7 @@ public:
 
 int Incident::totalIncidents = 0;
 
+//TrafficIncident inherits from Incident
 class TrafficIncident : public Incident {
 public:
     TrafficIncident(int severity, string location)
@@ -91,16 +92,19 @@ public:
 
 int Responder::totalResponders = 0;
 
+//Police inherits from Responder
 class Police : public Responder {
 public:
     Police(string name) : Responder(name, "Police") {}
 };
 
+//Firefighter inherits from Responder
 class Firefighter : public Responder {
 public:
     Firefighter(string name) : Responder(name, "Firefighter") {}
 };
 
+//Medic inherits from Responder
 class Medic : public Responder {
 public:
     Medic(string name) : Responder(name, "Medic") {}
