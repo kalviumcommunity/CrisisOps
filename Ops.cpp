@@ -35,7 +35,19 @@ public:
         return location;
     }
 
-    virtual void displayDetails() const {
+    virtual void displayDetails() const = 0;  
+
+    virtual ~Incident() {}
+};
+
+int Incident::totalIncidents = 0;
+
+class TrafficIncident : public Incident {
+public:
+    TrafficIncident(int severity, string location)
+        : Incident("Traffic", severity, location) {}
+
+    void displayDetails() const override {
         cout << "Incident Type: " << type << "\n"
              << "Severity: " << severity << "\n"
              << "Location: " << location << "\n"
@@ -43,13 +55,17 @@ public:
     }
 };
 
-int Incident::totalIncidents = 0;
-
-//TrafficIncident inherits from Incident
-class TrafficIncident : public Incident {
+class MedicalIncident : public Incident {
 public:
-    TrafficIncident(int severity, string location)
-        : Incident("Traffic", severity, location) {}
+    MedicalIncident(int severity, string location)
+        : Incident("Medical", severity, location) {}
+
+    void displayDetails() const override {
+        cout << "Incident Type: " << type << "\n"
+             << "Severity: " << severity << "\n"
+             << "Location: " << location << "\n"
+             << "Status: " << status << endl;
+    }
 };
 
 class Responder {
@@ -70,16 +86,7 @@ public:
         return totalResponders;
     }
 
-    virtual void respondToIncident(Incident& incident) {
-        if (available) {
-            cout << name << " is responding to a " << incident.getType()
-                 << " at " << incident.getLocation() << "." << endl;
-            available = false;
-            incident.updateStatus("in progress");
-        } else {
-            cout << name << " is currently unavailable." << endl;
-        }
-    }
+    virtual void respondToIncident(Incident& incident) = 0;
 
     void updateAvailability(bool status) {
         available = status;
@@ -90,26 +97,58 @@ public:
              << "Type: " << type << "\n"
              << "Availability: " << (available ? "Available" : "Unavailable") << endl;
     }
+
+    virtual ~Responder() {}
 };
 
 int Responder::totalResponders = 0;
 
-//Police inherits from Responder
 class Police : public Responder {
 public:
     Police(string name) : Responder(name, "Police") {}
+
+    void respondToIncident(Incident& incident) override { 
+        if (available) {
+            cout << name << " (Police) is responding to a " << incident.getType()
+                 << " at " << incident.getLocation() << "." << endl;
+            available = false;
+            incident.updateStatus("in progress");
+        } else {
+            cout << name << " is currently unavailable." << endl;
+        }
+    }
 };
 
-//Firefighter inherits from Responder
 class Firefighter : public Responder {
 public:
     Firefighter(string name) : Responder(name, "Firefighter") {}
+
+    void respondToIncident(Incident& incident) override { 
+        if (available) {
+            cout << name << " (Firefighter) is responding to a " << incident.getType()
+                 << " at " << incident.getLocation() << "." << endl;
+            available = false;
+            incident.updateStatus("in progress");
+        } else {
+            cout << name << " is currently unavailable." << endl;
+        }
+    }
 };
 
-//Medic inherits from Responder
 class Medic : public Responder {
 public:
     Medic(string name) : Responder(name, "Medic") {}
+
+    void respondToIncident(Incident& incident) override { 
+        if (available) {
+            cout << name << " (Medic) is responding to a " << incident.getType()
+                 << " at " << incident.getLocation() << "." << endl;
+            available = false;
+            incident.updateStatus("in progress");
+        } else {
+            cout << name << " is currently unavailable." << endl;
+        }
+    }
 };
 
 class City {
@@ -138,7 +177,7 @@ public:
     }
 
     void dispatchResponder(Responder* responder, Incident* incident) {
-        responder->respondToIncident(*incident);
+        responder->respondToIncident(*incident);  
     }
 
     void displayCityStatus() const {
@@ -170,7 +209,7 @@ public:
 int main() {
     Incident* incidentsArray[] = {
         new TrafficIncident(2, "Anna Nagar"),
-        new Incident("Medical", 3, "R.S. Puram")
+        new MedicalIncident(3, "R.S. Puram")
     };
 
     Responder* respondersArray[] = {
@@ -180,8 +219,8 @@ int main() {
 
     City city(incidentsArray, 2, respondersArray, 2);
 
-    city.dispatchResponder(respondersArray[0], incidentsArray[0]);
-    city.dispatchResponder(respondersArray[1], incidentsArray[1]);
+    city.dispatchResponder(respondersArray[0], incidentsArray[0]);  
+    city.dispatchResponder(respondersArray[1], incidentsArray[1]);  
 
     city.displayCityStatus();
 
