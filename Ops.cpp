@@ -5,11 +5,11 @@
 using namespace std;
 
 class Incident {
-protected:    
-    string type;    
-    int severity;      
-    string location; 
-    string status;     
+protected:
+    string type;
+    int severity;
+    string location;
+    string status;
 
     static int totalIncidents;
 
@@ -35,7 +35,7 @@ public:
         return location;
     }
 
-    virtual void displayDetails() const = 0;  
+    virtual void displayDetails() const = 0;
 
     virtual ~Incident() {}
 };
@@ -70,16 +70,16 @@ public:
 
 class Responder {
 protected:
-    string name;     
-    string type;      
-    bool available; 
-  
+    string name;
+    string type;
+    bool available;
+
     static int totalResponders;
 
 public:
     Responder(string name, string type)
         : name(name), type(type), available(true) {
-        totalResponders++;  
+        totalResponders++;
     }
 
     static int getTotalResponders() {
@@ -107,7 +107,7 @@ class Police : public Responder {
 public:
     Police(string name) : Responder(name, "Police") {}
 
-    void respondToIncident(Incident& incident) override { 
+    void respondToIncident(Incident& incident) override {
         if (available) {
             cout << name << " (Police) is responding to a " << incident.getType()
                  << " at " << incident.getLocation() << "." << endl;
@@ -123,7 +123,7 @@ class Firefighter : public Responder {
 public:
     Firefighter(string name) : Responder(name, "Firefighter") {}
 
-    void respondToIncident(Incident& incident) override { 
+    void respondToIncident(Incident& incident) override {
         if (available) {
             cout << name << " (Firefighter) is responding to a " << incident.getType()
                  << " at " << incident.getLocation() << "." << endl;
@@ -139,7 +139,7 @@ class Medic : public Responder {
 public:
     Medic(string name) : Responder(name, "Medic") {}
 
-    void respondToIncident(Incident& incident) override { 
+    void respondToIncident(Incident& incident) override {
         if (available) {
             cout << name << " (Medic) is responding to a " << incident.getType()
                  << " at " << incident.getLocation() << "." << endl;
@@ -153,8 +153,8 @@ public:
 
 class City {
 private:
-    vector<Incident*> incidents;    
-    vector<Responder*> responders;  
+    vector<Incident*> incidents;
+    vector<Responder*> responders;
 
 public:
     City(Incident* incs[], int incCount, Responder* resps[], int respCount) {
@@ -177,7 +177,7 @@ public:
     }
 
     void dispatchResponder(Responder* responder, Incident* incident) {
-        responder->respondToIncident(*incident);  
+        responder->respondToIncident(*incident);
     }
 
     void displayCityStatus() const {
@@ -219,8 +219,8 @@ int main() {
 
     City city(incidentsArray, 2, respondersArray, 2);
 
-    city.dispatchResponder(respondersArray[0], incidentsArray[0]);  
-    city.dispatchResponder(respondersArray[1], incidentsArray[1]);  
+    city.dispatchResponder(respondersArray[0], incidentsArray[0]);
+    city.dispatchResponder(respondersArray[1], incidentsArray[1]);
 
     city.displayCityStatus();
 
