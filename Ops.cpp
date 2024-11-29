@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// Base Incident class
 class Incident {
 protected:
     string type;
@@ -42,6 +43,7 @@ public:
 
 int Incident::totalIncidents = 0;
 
+// TrafficIncident class
 class TrafficIncident : public Incident {
 public:
     TrafficIncident(int severity, string location)
@@ -55,6 +57,7 @@ public:
     }
 };
 
+// MedicalIncident class
 class MedicalIncident : public Incident {
 public:
     MedicalIncident(int severity, string location)
@@ -68,6 +71,7 @@ public:
     }
 };
 
+// Responder class
 class Responder {
 protected:
     string name;
@@ -103,6 +107,7 @@ public:
 
 int Responder::totalResponders = 0;
 
+// Police class
 class Police : public Responder {
 public:
     Police(string name) : Responder(name, "Police") {}
@@ -119,6 +124,7 @@ public:
     }
 };
 
+// Firefighter class
 class Firefighter : public Responder {
 public:
     Firefighter(string name) : Responder(name, "Firefighter") {}
@@ -135,6 +141,7 @@ public:
     }
 };
 
+// Medic class
 class Medic : public Responder {
 public:
     Medic(string name) : Responder(name, "Medic") {}
@@ -151,29 +158,64 @@ public:
     }
 };
 
-class City {
+// IncidentManager class
+class IncidentManager {
 private:
     vector<Incident*> incidents;
-    vector<Responder*> responders;
 
 public:
-    City(Incident* incs[], int incCount, Responder* resps[], int respCount) {
-        for (int i = 0; i < incCount; i++) {
-            this->incidents.push_back(incs[i]);
-        }
-        for (int i = 0; i < respCount; i++) {
-            this->responders.push_back(resps[i]);
-        }
-    }
-
     void logIncident(Incident* incident) {
-        this->incidents.push_back(incident);
+        incidents.push_back(incident);
         cout << "New incident logged: " << incident->getType()
              << " at " << incident->getLocation() << "." << endl;
     }
 
+    const vector<Incident*>& getIncidents() const {
+        return incidents;
+    }
+
+    ~IncidentManager() {
+        for (auto incident : incidents) {
+            delete incident;
+        }
+    }
+};
+
+// ResponderManager class
+class ResponderManager {
+private:
+    vector<Responder*> responders;
+
+public:
     void addResponder(Responder* responder) {
-        this->responders.push_back(responder);
+        responders.push_back(responder);
+    }
+
+    const vector<Responder*>& getResponders() const {
+        return responders;
+    }
+
+    ~ResponderManager() {
+        for (auto responder : responders) {
+            delete responder;
+        }
+    }
+};
+
+// City class
+class City {
+private:
+    IncidentManager incidentManager;
+    ResponderManager responderManager;
+
+public:
+    City(Incident* incs[], int incCount, Responder* resps[], int respCount) {
+        for (int i = 0; i < incCount; i++) {
+            incidentManager.logIncident(incs[i]);
+        }
+        for (int i = 0; i < respCount; i++) {
+            responderManager.addResponder(resps[i]);
+        }
     }
 
     void dispatchResponder(Responder* responder, Incident* incident) {
@@ -184,28 +226,22 @@ public:
         cout << "City Status Overview:\n" << endl;
         cout << "Total Incidents: " << Incident::getTotalIncidents() << endl;
         cout << "Total Responders: " << Responder::getTotalResponders() << endl;
+
         cout << "Incidents:\n";
-        for (const auto& incident : this->incidents) {
+        for (const auto& incident : incidentManager.getIncidents()) {
             incident->displayDetails();
             cout << "-------------------\n";
         }
+
         cout << "Responders:\n";
-        for (const auto& responder : this->responders) {
+        for (const auto& responder : responderManager.getResponders()) {
             responder->displayDetails();
             cout << "-------------------\n";
         }
     }
-
-    ~City() {
-        for (auto incident : incidents) {
-            delete incident;
-        }
-        for (auto responder : responders) {
-            delete responder;
-        }
-    }
 };
 
+// Main function
 int main() {
     Incident* incidentsArray[] = {
         new TrafficIncident(2, "Anna Nagar"),
