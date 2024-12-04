@@ -4,7 +4,6 @@
 
 using namespace std;
 
-// Base Incident class
 class Incident {
 protected:
     string type;
@@ -43,7 +42,6 @@ public:
 
 int Incident::totalIncidents = 0;
 
-// TrafficIncident class
 class TrafficIncident : public Incident {
 public:
     TrafficIncident(int severity, string location)
@@ -57,7 +55,6 @@ public:
     }
 };
 
-// MedicalIncident class
 class MedicalIncident : public Incident {
 public:
     MedicalIncident(int severity, string location)
@@ -71,7 +68,6 @@ public:
     }
 };
 
-// Responder class
 class Responder {
 protected:
     string name;
@@ -107,7 +103,6 @@ public:
 
 int Responder::totalResponders = 0;
 
-// Police class
 class Police : public Responder {
 public:
     Police(string name) : Responder(name, "Police") {}
@@ -124,7 +119,6 @@ public:
     }
 };
 
-// Firefighter class
 class Firefighter : public Responder {
 public:
     Firefighter(string name) : Responder(name, "Firefighter") {}
@@ -141,7 +135,6 @@ public:
     }
 };
 
-// Medic class
 class Medic : public Responder {
 public:
     Medic(string name) : Responder(name, "Medic") {}
@@ -158,19 +151,32 @@ public:
     }
 };
 
-// IncidentManager class
-class IncidentManager {
+class IIncidentManager {
+public:
+    virtual void logIncident(Incident* incident) = 0;
+    virtual const vector<Incident*>& getIncidents() const = 0;
+    virtual ~IIncidentManager() = default;
+};
+
+class IResponderManager {
+public:
+    virtual void addResponder(Responder* responder) = 0;
+    virtual const vector<Responder*>& getResponders() const = 0;
+    virtual ~IResponderManager() = default;
+};
+
+class IncidentManager : public IIncidentManager {
 private:
     vector<Incident*> incidents;
 
 public:
-    void logIncident(Incident* incident) {
+    void logIncident(Incident* incident) override {
         incidents.push_back(incident);
         cout << "New incident logged: " << incident->getType()
              << " at " << incident->getLocation() << "." << endl;
     }
 
-    const vector<Incident*>& getIncidents() const {
+    const vector<Incident*>& getIncidents() const override {
         return incidents;
     }
 
@@ -181,17 +187,16 @@ public:
     }
 };
 
-// ResponderManager class
-class ResponderManager {
+class ResponderManager : public IResponderManager {
 private:
     vector<Responder*> responders;
 
 public:
-    void addResponder(Responder* responder) {
+    void addResponder(Responder* responder) override {
         responders.push_back(responder);
     }
 
-    const vector<Responder*>& getResponders() const {
+    const vector<Responder*>& getResponders() const override {
         return responders;
     }
 
@@ -202,21 +207,14 @@ public:
     }
 };
 
-// City class
 class City {
 private:
-    IncidentManager incidentManager;
-    ResponderManager responderManager;
+    IIncidentManager& incidentManager;
+    IResponderManager& responderManager;
 
 public:
-    City(Incident* incs[], int incCount, Responder* resps[], int respCount) {
-        for (int i = 0; i < incCount; i++) {
-            incidentManager.logIncident(incs[i]);
-        }
-        for (int i = 0; i < respCount; i++) {
-            responderManager.addResponder(resps[i]);
-        }
-    }
+    City(IIncidentManager& im, IResponderManager& rm)
+        : incidentManager(im), responderManager(rm) {}
 
     void dispatchResponder(Responder* responder, Incident* incident) {
         responder->respondToIncident(*incident);
@@ -241,22 +239,23 @@ public:
     }
 };
 
-// Main function
 int main() {
-    Incident* incidentsArray[] = {
-        new TrafficIncident(2, "Anna Nagar"),
-        new MedicalIncident(3, "R.S. Puram")
-    };
+    IncidentManager incidentManager;
+    ResponderManager responderManager;
 
-    Responder* respondersArray[] = {
-        new Firefighter("Kamalesh"),
-        new Medic("Dharini")
-    };
+    incidentManager.logIncident(new TrafficIncident(2, "Anna Nagar"));
+    incidentManager.logIncident(new MedicalIncident(3, "R.S. Puram"));
 
-    City city(incidentsArray, 2, respondersArray, 2);
+    responderManager.addResponder(new Firefighter("Kamalesh"));
+    responderManager.addResponder(new Medic("Dharini"));
 
-    city.dispatchResponder(respondersArray[0], incidentsArray[0]);
-    city.dispatchResponder(respondersArray[1], incidentsArray[1]);
+    City city(incidentManager, responderManager);
+
+    auto incidents = incidentManager.getIncidents();
+    auto responders = responderManager.getResponders();
+
+    city.dispatchResponder(responders[0], incidents[0]);
+    city.dispatchResponder(responders[1], incidents[1]);
 
     city.displayCityStatus();
 
